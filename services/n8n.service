@@ -1,0 +1,20 @@
+[Unit]
+Description=n8n Personal Automation
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/dr/.n8n
+EnvironmentFile=/home/dr/.config/n8n/n8n.env
+Environment="PATH=/home/dr/.nvm/versions/node/v24.16.0/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="NODE_OPTIONS=--max-old-space-size=1024"
+UMask=0077
+ExecStart=/home/dr/.nvm/versions/node/v24.16.0/bin/node /home/dr/.nvm/versions/node/v24.16.0/lib/node_modules/n8n/bin/n8n start
+Restart=always
+RestartSec=5
+MemoryHigh=1G
+MemoryMax=1536M
+
+[Install]
+WantedBy=default.target

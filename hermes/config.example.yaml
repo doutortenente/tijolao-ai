@@ -1,0 +1,29 @@
+# Recorte declarativo; não substitui o config.yaml inteiro.
+model:
+  default: gpt-5.6-sol
+  provider: openai-codex
+  base_url: https://chatgpt.com/backend-api/codex
+
+# O Hermes já inclui cache de prompt e compressão. A cauda enxuta preserva
+# três pedidos reais recentes e reduz o histórico reenviado após a compressão.
+context:
+  engine: compressor
+
+compression:
+  enabled: true
+  threshold: 0.50
+  in_place: true
+  tail_mode: lean
+  min_tail_user_messages: 3
+  # Poda a cada turno quebraria o cache; mantenha desativada.
+  proactive_prune_tokens: 0
+
+auxiliary:
+  background_review:
+    enabled: true
+    provider: openrouter
+    model: nvidia/nemotron-3-ultra-550b-a55b:free
+
+skills:
+  external_dirs:
+    - /home/dr/.claude/skills

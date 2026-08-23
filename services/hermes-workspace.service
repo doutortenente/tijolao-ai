@@ -1,0 +1,17 @@
+[Unit]
+Description=Hermes Workspace
+After=network-online.target hermes-gateway.service hermes-dashboard.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/dr/projetos/hermes-workspace
+EnvironmentFile=/home/dr/projetos/hermes-workspace/.env
+Environment="NODE_ENV=production"
+Environment="PATH=/home/dr/.hermes/hermes-agent/venv/bin:/home/dr/.local/bin:/home/dr/.nvm/versions/node/v24.16.0/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/home/dr/.local/bin/node /home/dr/projetos/hermes-workspace/server-entry.js
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
