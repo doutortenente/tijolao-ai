@@ -1,0 +1,53 @@
+{
+  "id": "429bfc89-c8cc-4112-b817-9366e507cf6f",
+  "name": "Hermes - Health",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "hermes-health",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "ed972ed3-35f9-4cf2-b10c-b58af94d9056",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0, 0],
+      "webhookId": "01fd4ffd-a2da-42d4-90c4-e3a302643742"
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:8642/health",
+        "options": {}
+      },
+      "id": "e0f2b39c-598c-4511-996f-29c5cb5960ca",
+      "name": "Hermes Health",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [260, 0]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Hermes Health",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "84fd2a2f-a141-49e4-8cf0-8b704586d914",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

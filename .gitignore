@@ -1,0 +1,24 @@
+# Segredos e identidade local
+.env
+.env.*
+*.env
+*.env.*
+!.env.example
+!*.env.example
+/hermes/config.yaml
+*.key
+*.pem
+**/auth.json
+**/credentials*
+**/*.sqlite*
+**/*.db
+
+# Estado e artefatos
+**/sessions/
+**/logs/
+**/node_modules/
+**/dist/
+**/.cache/
+*.bak
+*.swp
+.DS_Store

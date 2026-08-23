@@ -1,0 +1,74 @@
+{
+  "id": "8ecf1c92-959b-45a8-a5e8-7bbb50b57f8f",
+  "name": "Hermes - Ask",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "hermes-ask",
+        "authentication": "headerAuth",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "8f8a84da-074d-47db-829d-cf1ad27e183e",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0, 0],
+      "webhookId": "738b2de0-8b2f-4160-b6ae-05c49abcb140",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "50b4af75-020e-41c1-84a9-aec2572cc4f1",
+          "name": "Tijolão Webhook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8642/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'gpt-5.6-sol', messages: [{ role: 'user', content: $json.body?.message || $json.message || '' }] }) }}",
+        "options": {}
+      },
+      "id": "cb2d3f5b-c690-4725-96db-b80e289eff68",
+      "name": "Hermes Chat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [260, 0],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "cc3af26f-27e8-4ca7-9d55-0734fd9d182a",
+          "name": "Hermes Local API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Hermes Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "75ee4a23-fd67-463b-92a2-a0aefc77456c",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}
