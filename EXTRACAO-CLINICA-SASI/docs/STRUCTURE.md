@@ -1,22 +1,20 @@
-# EXTRACAO-CLINICA-SASI
+# STRUCTURE
 
-**Sistema de Extração e Compilação de Dados Clínicos para UTI**
-*Dr. Nicolas - Beneficência Portuguesa*
+## Estrutura do Repositório
 
-## Estrutura
 ```
 EXTRACAO-CLINICA-SASI/
 ├── .github/workflows/validate.yml
 ├── data/
-│   ├── processed/leitos/
-│   ├── processed/compilado/
+│   ├── processed/
+│   │   ├── leitos/
+│   │   └── compilado/
 │   └── raw/README.md
 ├── docs/
 │   ├── BRIEFING.md
 │   ├── CONTRIBUTING.md
 │   ├── mapa-folha.md
-│   ├── README.md
-│   └── STRUCTURE.md
+│   └── README.md
 ├── output/evolucoes/16-08-2026/
 ├── scripts/
 │   ├── build_passagem.py
@@ -25,11 +23,5 @@ EXTRACAO-CLINICA-SASI/
 │   ├── requirements.txt
 │   └── validate_data.py
 ├── tests/test_build_passagem.py
-└── .gitignore
-```
-
-## Uso
-```bash
-python scripts/build_passagem.py --file data/leito_01.json
-python scripts/validate_data.py --directory data/processed/leitos/
+└── LICENSE
 ```
