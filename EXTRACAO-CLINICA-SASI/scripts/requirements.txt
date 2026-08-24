@@ -1,0 +1,6 @@
+pdfplumber
+pytesseract
+Pillow
+jsonschema
+pytest
+python-dotenv
