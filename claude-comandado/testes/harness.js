@@ -5,8 +5,10 @@ const path = require('node:path');
 const RAIZ = path.resolve(__dirname, '..');
 const PROJ = path.join(__dirname, 'proj');
 
-// O git não preserva o bit de execução ao clonar via API; garante aqui.
+// Fixtures que o git não carrega sozinho: o binário falso está versionado como
+// 100644 e o subdiretório vazio não existe no clone. Recria os dois aqui.
 require('node:fs').chmodSync(path.join(__dirname, 'fakebin', 'claude'), 0o755);
+require('node:fs').mkdirSync(path.join(PROJ, 'sub'), { recursive: true });
 
 const fs = require('node:fs');
 let contadorLog = 0;
