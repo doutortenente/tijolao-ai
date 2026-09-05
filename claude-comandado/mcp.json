@@ -2,9 +2,9 @@
   "mcpServers": {
     "claude-comandado": {
       "command": "node",
-      "args": ["/home/dr/projetos/claude-comandado/servidor.js"],
+      "args": ["/CAMINHO/ABSOLUTO/ATE/claude-comandado/servidor.js"],
       "env": {
-        "CC_MCP_RAIZES": "/home/dr/projetos",
+        "CC_MCP_RAIZES": "/CAMINHO/QUE/O/AGENTE/PODE/LER",
         "CC_MCP_ESCRITA": "0",
         "CC_MCP_ORCAMENTO": "2.00",
         "CC_MCP_TURNOS": "20",

@@ -1,4 +1,4 @@
-# Segredos e identidade local
+# Segurança e identidade local
 .env
 .env.*
 *.env
@@ -22,3 +22,4 @@
 *.bak
 *.swp
 .DS_Store
+claude-comandado/testes/args-*.log
