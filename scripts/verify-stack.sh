@@ -4,6 +4,10 @@ set -uo pipefail
 FAILURES=0
 DEEP=false
 
+REPO_RAIZ="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+MCP_CLAUDE_COMANDADO="$REPO_RAIZ/claude-comandado/servidor.js"
+MCP_INIT='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"verify-stack","version":"1"}}}'
+
 if (( $# > 1 )); then
   echo "Uso: $0 [--deep]" >&2
   exit 2
@@ -77,6 +81,18 @@ if hermes auth list openai-codex >/dev/null 2>&1; then
   ok "credencial openai-codex do Hermes"
 else
   fail "credencial openai-codex do Hermes"
+fi
+
+# claude-comandado é servidor MCP stdio: não tem serviço nem porta, então a
+# verificação é o handshake JSON-RPC. Não invoca modelo e não gasta token.
+if [[ -f "$MCP_CLAUDE_COMANDADO" ]] && command -v node >/dev/null 2>&1 &&
+  printf '%s\n' "$MCP_INIT" |
+  timeout 15 node "$MCP_CLAUDE_COMANDADO" 2>/dev/null |
+  python3 -c 'import json,sys; d=json.loads(sys.stdin.readline()); assert d["result"]["serverInfo"]["name"]=="claude-comandado"'
+then
+  ok "handshake do servidor MCP claude-comandado"
+else
+  fail "handshake do servidor MCP claude-comandado"
 fi
 
 for secret_spec in \
@@ -154,6 +170,20 @@ if $DEEP; then
       fail "chamada profunda n8n → Hermes → Codex"
     fi
     unset N8N_HERMES_WEBHOOK_SECRET n8n_payload
+  fi
+
+  # Confere se o Claude Code responde pelo servidor MCP. claude_diagnostico só roda
+  # `claude --version` e `claude auth status`: não chama modelo, não gasta token.
+  if [[ ! -f "$MCP_CLAUDE_COMANDADO" ]]; then
+    fail "servidor MCP claude-comandado presente para teste profundo"
+  elif printf '%s\n%s\n' "$MCP_INIT" \
+    '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"claude_diagnostico","arguments":{}}}' |
+    timeout 30 node "$MCP_CLAUDE_COMANDADO" 2>/dev/null |
+    python3 -c 'import json,sys; rs=[json.loads(l) for l in sys.stdin if l.strip()]; r=[x for x in rs if x.get("id")==2][0]; assert r["result"]["isError"] is False'
+  then
+    ok "Claude Code acessível pelo claude-comandado"
+  else
+    fail "Claude Code acessível pelo claude-comandado"
   fi
 fi
 
