@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Falso Claude Code para testar o servidor MCP.
+if [[ "$1" == "--version" ]]; then echo "2.1.260 (Claude Code)"; exit 0; fi
+if [[ "$1" == "auth" && "$2" == "status" ]]; then echo '{"loggedIn":true,"method":"subscription"}'; exit 0; fi
+
+# Simula versão antiga que não conhece --max-budget-usd
+if [[ "$FAKE_VELHO" == "1" ]]; then
+  for a in "$@"; do
+    if [[ "$a" == "--max-budget-usd" ]]; then
+      echo "error: unknown option '--max-budget-usd'" >&2
+      exit 1
+    fi
+  done
+fi
+
+if [[ "$FAKE_LENTO" == "1" ]]; then sleep 30; fi
+
+# Ecoa os argumentos recebidos para conferência
+printf '%s\n' "ARGS: $*" >&2
+if [[ -n "$FAKE_LOG" ]]; then printf '%s\n' "ARGS: $*" >> "$FAKE_LOG"; fi
+echo "{\"type\":\"result\",\"result\":\"resposta do claude sobre: $2 (cwd=$(pwd))\",\"session_id\":\"sess-abc-123\",\"total_cost_usd\":0.0123,\"is_error\":false}"
