@@ -22,6 +22,7 @@ Em 2026-08-22:
 | Hermes Dashboard | Estado e manutenção do Hermes | `127.0.0.1:9119` |
 | Hermes Workspace | Interface principal | `127.0.0.1:3000` |
 | n8n | Automações e webhooks | `127.0.0.1:5678` |
+| claude-comandado | Servidor MCP que expõe o Claude Code a outros agentes | stdio, sem porta |
 
 ## Estrutura
 
@@ -31,6 +32,9 @@ Em 2026-08-22:
 - `services/`: unidades systemd sem credenciais.
 - `scripts/`: sincronização e verificação.
 - `harpa/`: área reservada após inventário real.
+- `claude-comandado/`: servidor MCP stdio que expõe o Claude Code como ferramenta
+  para outros agentes, como o Grok Build. Não tem serviço systemd nem porta: o
+  cliente MCP sobe o processo sob demanda. Ver `claude-comandado/README.md`.
 
 ## Aplicação
 
@@ -55,6 +59,9 @@ O Hermes usa OAuth `openai-codex` como rota principal. `OPENAI_API_KEY` pode
 existir apenas como fallback. Tokens da API, proprietário do n8n e autenticação
 do webhook ficam fora do Git, em arquivos `0600`. O webhook `hermes-ask` exige
 o cabeçalho secreto local; chamadas sem ele recebem `403`.
+
+O `claude-comandado` não tem credencial própria: usa o login do Claude Code já
+instalado na máquina. Nenhuma chave entra no repositório.
 
 ## Economia de tokens
 
@@ -84,8 +91,10 @@ Audite sem exibir credenciais:
 ./scripts/verify-stack.sh --deep
 ```
 
-O teste normal confirma serviços, portas, webhooks, permissões e autenticação sem
-exibir credenciais. `--deep` também chama Hermes → Codex e n8n → Hermes → Codex.
+O teste normal confirma serviços, portas, webhooks, permissões, autenticação e o
+handshake JSON-RPC do `claude-comandado`, sem exibir credenciais. `--deep` também
+chama Hermes → Codex, n8n → Hermes → Codex e confere se o Claude Code responde
+pelo servidor MCP. Nenhuma das checagens do `claude-comandado` invoca modelo.
 
 ## Publicação
 
