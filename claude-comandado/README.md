@@ -24,8 +24,8 @@ follow-ups e acompanhar gasto.
 
 ## Instalação
 
-1. Copie `servidor.js` para a máquina. Neste repositório ele mora em `claude-comandado/`;
-   o caminho no `mcp.json` precisa apontar para onde o arquivo estiver de fato.
+1. Coloque o `servidor.js` onde quiser na máquina. O caminho no `mcp.json` é placeholder:
+   troque pelo caminho absoluto real do arquivo.
 2. Confirme que o Claude Code está instalado e logado (`claude auth status`).
 3. Registre o servidor no cliente MCP (abaixo).
 
@@ -34,16 +34,16 @@ Não há `npm install`.
 ## Configuração no Grok Build
 
 O Grok Build lê `.mcp.json` e `claude_desktop_config.json` no mesmo formato do Claude Code.
-Use o `mcp.json` de exemplo deste repositório:
+Use o `mcp.json` de exemplo deste diretório, trocando os dois caminhos em MAIÚSCULAS:
 
 ```json
 {
   "mcpServers": {
     "claude-comandado": {
       "command": "node",
-      "args": ["/home/dr/projetos/claude-comandado/servidor.js"],
+      "args": ["/CAMINHO/ABSOLUTO/ATE/claude-comandado/servidor.js"],
       "env": {
-        "CC_MCP_RAIZES": "/home/dr/projetos",
+        "CC_MCP_RAIZES": "/CAMINHO/QUE/O/AGENTE/PODE/LER",
         "CC_MCP_ESCRITA": "0"
       }
     }
@@ -51,9 +51,10 @@ Use o `mcp.json` de exemplo deste repositório:
 }
 ```
 
-> Cuidado com onde esse arquivo mora. Se ele ficar dentro de um projeto em que o Claude Code
-> também roda, o Claude carregaria este servidor e poderia chamar a si mesmo. O servidor já
-> se protege disso (veja `CC_MCP_MCP_INTERNO`), mas o melhor é guardá-lo fora dos projetos.
+> Cuidado com onde esse arquivo de configuração mora. Se ele ficar dentro de um projeto em
+> que o Claude Code também roda, o Claude carregaria este servidor e poderia chamar a si
+> mesmo. O servidor já se protege disso (veja `CC_MCP_MCP_INTERNO`), mas o melhor é
+> guardá-lo fora dos projetos.
 
 ---
 
@@ -70,6 +71,9 @@ Use o `mcp.json` de exemplo deste repositório:
 | `CC_MCP_BIN` | `claude` | Caminho do binário, se não estiver no PATH. |
 | `CC_MCP_MODELO` | (o da máquina) | `sonnet`, `opus`, `haiku` ou `fable`. |
 | `CC_MCP_SAIDA_MAX` | `40000` | Corte de caracteres na resposta, para não estourar o contexto do Grok. |
+
+O padrão de `CC_MCP_RAIZES` é só um padrão: se o diretório não existir, o servidor recusa
+todas as chamadas em vez de abrir alguma coisa por engano.
 
 ---
 
@@ -103,6 +107,9 @@ Sem a flag `--bare`, o Claude Code usa o login da sua **assinatura**. Não preci
 `node testes/harness.js` — 41 checagens: handshake, negociação de protocolo (2025-03-26 até
 2026-07-28), cerca de diretório, bloqueio de escrita, continuação de sessão, timeout, binário
 ausente e o caminho de repetição automática quando a versão instalada rejeita uma flag opcional.
+
+O `scripts/verify-stack.sh` do repositório também cobre este servidor: o teste normal faz o
+handshake JSON-RPC e o `--deep` chama `claude_diagnostico`. Nenhum dos dois invoca modelo.
 
 **Limite honesto**: os testes rodam contra um Claude Code simulado, não contra o binário real.
 O que foi verificado é o comportamento do servidor MCP; o que não foi verificado é a resposta
