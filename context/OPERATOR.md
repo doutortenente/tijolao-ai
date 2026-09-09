@@ -38,17 +38,16 @@
 - `/home/dr/projetos/claude`: configuração e catálogo de skills/subagentes; preservar a worktree existente.
 - `/home/dr/projetos/SASI-V3`: aplicação clínica ativa; regras específicas vivem no próprio repositório.
 - `/home/dr/.hermes/hermes-agent`: instalação ativa; não tratar como clone descartável.
-- `/home/dr/projetos/hermes-agent`: clone de desenvolvimento, com fork pessoal em `origin` e projeto oficial em `upstream`.
 - `/home/dr/projetos/hermes-workspace`: interface escolhida; `hermes-webui` fica apenas como fallback.
 - `/home/dr/vaults/celebro`: vault de conhecimento; conteúdo clínico não entra na memória global.
 
 ## Decisões
 
-- 2026-08-20: `openai-codex/gpt-5.6-sol` é o cérebro principal do Hermes.
+- 2026-09-05: `nine-router/cx/gpt-5.6-sol` é a rota principal do Hermes; o OAuth do Codex fica atrás do 9Router.
 - 2026-08-22: contexto compartilhado passa a ser curado por projeção, sem importação bruta.
 - 2026-08-22: skills Claude são referenciadas por `skills.external_dirs`; não duplicar o catálogo.
 - 2026-08-22: não criar symlinks novos para configuração; gerar cópias explícitas.
-- 2026-08-22: manter runtime Hermes em `~/.hermes` e código de desenvolvimento em `~/projetos`.
+- 2026-09-07: manter somente o runtime ativo do Hermes em `~/.hermes`; recriar um clone de desenvolvimento em `~/projetos` apenas quando houver trabalho real no núcleo.
 - 2026-08-22: usar `hermes-workspace` como interface; `hermes-webui` fica como fallback.
 - 2026-08-22: manter n8n nativo via systemd enquanto a versão instalada for suportada e estável.
 - 2026-08-22: n8n 2.32.5 integrado ao Hermes com webhook autenticado, credenciais criptografadas e backup/rollback SQLite.

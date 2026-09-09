@@ -62,7 +62,10 @@ check_service hermes-workspace.service
 check_service n8n.service
 
 check_http "Hermes API :8642" "http://127.0.0.1:8642/health"
-check_http "Dashboard :9119" "http://127.0.0.1:9119/api/status"
+dashboard_host=$(systemctl --user show hermes-dashboard.service -p ExecStart --value 2>/dev/null |
+  sed -n 's/.*--host \([^ ;}]*\).*/\1/p')
+dashboard_host=${dashboard_host:-127.0.0.1}
+check_http "Dashboard :9119" "http://${dashboard_host}:9119/api/status"
 check_http "Workspace :3000" "http://127.0.0.1:3000/api/sessions"
 check_http "n8n :5678" "http://127.0.0.1:5678/healthz"
 check_http "webhook n8n → Hermes (saúde)" "http://127.0.0.1:5678/webhook/hermes-health"
@@ -86,7 +89,7 @@ for secret_spec in \
   '/home/dr/.config/n8n/webhook.env|N8N_HERMES_WEBHOOK_SECRET'; do
   secret_file="${secret_spec%%|*}"
   secret_key="${secret_spec#*|}"
-  if [[ -f "$secret_file" && $(stat -c '%a' "$secret_file" 2>/dev/null) == "600" ]]; then
+  if [[ -f "$secret_file" && $(stat -Lc '%a' "$secret_file" 2>/dev/null) == "600" ]]; then
     ok "permissão 0600 em $secret_file"
   else
     fail "permissão 0600 em $secret_file"
@@ -117,7 +120,7 @@ if $DEEP; then
     # shellcheck disable=SC1091
     source /home/dr/.hermes/.env
     set +a
-    payload='{"model":"gpt-5.6-sol","messages":[{"role":"user","content":"Responda exatamente STACK_OK"}]}'
+    payload='{"model":"hermes-agent","messages":[{"role":"user","content":"Responda exatamente STACK_OK"}]}'
     if [[ -n ${API_SERVER_KEY:-} ]] &&
       curl --silent --show-error --fail --max-time 120 \
         -H "Authorization: Bearer ${API_SERVER_KEY}" \
@@ -126,9 +129,9 @@ if $DEEP; then
         http://127.0.0.1:8642/v1/chat/completions |
       python3 -c 'import json,sys; d=json.load(sys.stdin); assert d["choices"][0]["message"]["content"].strip()=="STACK_OK"'
     then
-      ok "chamada profunda Hermes → Codex"
+      ok "chamada profunda Hermes → 9Router → Codex"
     else
-      fail "chamada profunda Hermes → Codex"
+      fail "chamada profunda Hermes → 9Router → Codex"
     fi
     unset API_SERVER_KEY payload
   fi
@@ -149,9 +152,9 @@ if $DEEP; then
         http://127.0.0.1:5678/webhook/hermes-ask |
       python3 -c 'import json,sys; d=json.load(sys.stdin); assert d["choices"][0]["message"]["content"].strip()=="N8N_HERMES_OK"'
     then
-      ok "chamada profunda n8n → Hermes → Codex"
+      ok "chamada profunda n8n → Hermes → 9Router → Codex"
     else
-      fail "chamada profunda n8n → Hermes → Codex"
+      fail "chamada profunda n8n → Hermes → 9Router → Codex"
     fi
     unset N8N_HERMES_WEBHOOK_SECRET n8n_payload
   fi

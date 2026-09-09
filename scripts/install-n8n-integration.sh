@@ -3,14 +3,14 @@ set -euo pipefail
 umask 077
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-N8N_HOME_DIR="${N8N_HOME_DIR:-/home/dr/.n8n}"
+N8N_HOME_DIR="${N8N_HOME_DIR:-/home/dr/.local/share/n8n/.n8n}"
 N8N_CONFIG_DIR="${N8N_CONFIG_DIR:-/home/dr/.config/n8n}"
 HERMES_ENV_FILE="${HERMES_ENV_FILE:-/home/dr/.hermes/.env}"
 N8N_ENV_FILE="$N8N_CONFIG_DIR/n8n.env"
 OWNER_ENV_FILE="$N8N_CONFIG_DIR/owner.env"
 WEBHOOK_ENV_FILE="$N8N_CONFIG_DIR/webhook.env"
-N8N_NODE="/home/dr/.nvm/versions/node/v24.16.0/bin/node"
-N8N_CLI="/home/dr/.nvm/versions/node/v24.16.0/lib/node_modules/n8n/bin/n8n"
+N8N_NODE="/home/dr/.config/nvm/versions/node/v24.16.0/bin/node"
+N8N_CLI="/home/dr/.config/nvm/versions/node/v24.16.0/lib/node_modules/n8n/bin/n8n"
 HERMES_PYTHON="/home/dr/.hermes/hermes-agent/venv/bin/python"
 EXPECTED_N8N_VERSION="2.32.5"
 HERMES_CREDENTIAL_ID="cc3af26f-27e8-4ca7-9d55-0734fd9d182a"

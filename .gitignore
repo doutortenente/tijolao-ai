@@ -22,3 +22,6 @@
 *.bak
 *.swp
 .DS_Store
+
+# pasta movida em 09-set-2026 (sem git proprio)
+central-do-trampo/

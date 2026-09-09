@@ -1,10 +1,10 @@
 # MEMORY
 
-## Estado verificado — 2026-08-22
+## Estado verificado — 2026-09-05
 
-- Cérebro principal: `openai-codex/gpt-5.6-sol`, autenticado por OAuth de dispositivo.
-- Chamada direta do Hermes respondeu `HERMES_CODEX_OK`; API compatível com OpenAI respondeu `API_CODEX_OK`.
-- Serviços de usuário ativos: gateway, dashboard em `127.0.0.1:9119`, Workspace em `127.0.0.1:3000` e n8n em `127.0.0.1:5678`.
+- Cérebro principal: provedor nomeado `nine-router`, modelo `cx/gpt-5.6-sol`; o 9Router usa o OAuth do Codex.
+- Chamada profunda Hermes → 9Router → Codex e n8n → Hermes → 9Router → Codex foram aprovadas.
+- Serviços de usuário ativos: gateway, Dashboard no IP privado do Tailscale em `:9119`, Workspace em `127.0.0.1:3000` e n8n em `127.0.0.1:5678`.
 - Runtime ativo: `/home/dr/.hermes/hermes-agent`; clones de desenvolvimento ficam em `/home/dr/projetos`.
 - Skills Claude são referenciadas por `skills.external_dirs=['/home/dr/.claude/skills']`; não duplicar o catálogo.
 - n8n 2.32.5 roda no Node NVM v24 com proprietário local, 2 credenciais criptografadas e 2 workflows publicados.
@@ -14,7 +14,7 @@
 ## Ambiente
 
 - Host `Tijolão`: Linux Mint 22.3, 4 threads e 7,6 GiB de RAM. RAM é o principal limite.
-- Serviços pessoais escutam apenas em `127.0.0.1`, salvo ordem explícita posterior.
+- API, Workspace e n8n escutam em `127.0.0.1`; o Dashboard escuta no IP privado do Tailscale com autenticação.
 - Código fica em `/home/dr/projetos`; estado do Hermes fica em `/home/dr/.hermes`.
 
 ## Decisões

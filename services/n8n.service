@@ -5,12 +5,12 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/dr/.n8n
+WorkingDirectory=/home/dr/.local/share/n8n/.n8n
 EnvironmentFile=/home/dr/.config/n8n/n8n.env
-Environment="PATH=/home/dr/.nvm/versions/node/v24.16.0/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="PATH=/home/dr/.config/nvm/versions/node/v24.16.0/bin:/usr/local/bin:/usr/bin:/bin"
 Environment="NODE_OPTIONS=--max-old-space-size=1024"
 UMask=0077
-ExecStart=/home/dr/.nvm/versions/node/v24.16.0/bin/node /home/dr/.nvm/versions/node/v24.16.0/lib/node_modules/n8n/bin/n8n start
+ExecStart=/home/dr/.config/nvm/versions/node/v24.16.0/bin/node /home/dr/.config/nvm/versions/node/v24.16.0/lib/node_modules/n8n/bin/n8n start
 Restart=always
 RestartSec=5
 MemoryHigh=1G

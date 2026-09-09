@@ -6,12 +6,12 @@ O repositório reúne somente o que deve ser versionado. Segredos, bancos, sess�
 
 ## Estado verificado
 
-Em 2026-08-22:
+Em 2026-09-05:
 
-- Hermes 0.20.5 usa `openai-codex/gpt-5.6-sol` como cérebro principal.
+- Hermes 0.21.0 usa o provedor nomeado `nine-router` e o modelo `cx/gpt-5.6-sol` como cérebro principal.
 - Gateway, dashboard, Hermes Workspace e n8n rodam como serviços systemd do usuário.
 - n8n 2.32.5 tem proprietário local, 2 credenciais criptografadas e 2 workflows publicados.
-- Toda interface escuta apenas em `127.0.0.1`.
+- API, Workspace e n8n escutam em `127.0.0.1`; o Dashboard usa a interface privada do Tailscale com autenticação.
 - O contexto compartilhado é curado; históricos brutos não são importados como memória.
 
 ## Componentes
@@ -19,7 +19,7 @@ Em 2026-08-22:
 | Componente | Papel | Endereço local |
 |---|---|---|
 | Hermes API | Agente e API compatível com OpenAI | `127.0.0.1:8642` |
-| Hermes Dashboard | Estado e manutenção do Hermes | `127.0.0.1:9119` |
+| Hermes Dashboard | Estado e manutenção do Hermes | IP privado do Tailscale em `:9119`, com autenticação |
 | Hermes Workspace | Interface principal | `127.0.0.1:3000` |
 | n8n | Automações e webhooks | `127.0.0.1:5678` |
 
@@ -51,8 +51,8 @@ para este repositório.
 
 ## Autenticação
 
-O Hermes usa OAuth `openai-codex` como rota principal. `OPENAI_API_KEY` pode
-existir apenas como fallback. Tokens da API, proprietário do n8n e autenticação
+O Hermes usa o 9Router local como rota principal; o 9Router encaminha `cx/gpt-5.6-sol`
+ao OAuth do Codex. `OPENAI_API_KEY` pode existir apenas como fallback. Tokens da API, proprietário do n8n e autenticação
 do webhook ficam fora do Git, em arquivos `0600`. O webhook `hermes-ask` exige
 o cabeçalho secreto local; chamadas sem ele recebem `403`.
 
@@ -85,7 +85,7 @@ Audite sem exibir credenciais:
 ```
 
 O teste normal confirma serviços, portas, webhooks, permissões e autenticação sem
-exibir credenciais. `--deep` também chama Hermes → Codex e n8n → Hermes → Codex.
+exibir credenciais. `--deep` também chama Hermes → 9Router → Codex e n8n → Hermes → 9Router → Codex.
 
 ## Publicação
 
