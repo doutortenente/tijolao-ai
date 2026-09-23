@@ -1,0 +1,53 @@
+# Proxy do Tijolão: Traefik (porteiro/roteador) + Heimdall (painel de atalhos)
+# Instalado pelo Hermes em 23-set-2026.
+name: proxy
+
+networks:
+  proxy:
+    name: proxy
+
+services:
+  traefik:
+    image: traefik:v3.7.13
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - --configFile=/etc/traefik/traefik.yml
+    ports:
+      # Só esta máquina (127.0.0.1) + IP da tailnet (100.91.46.87).
+      # A LAN comum (192.168.x) não alcança: nada escuta nesse endereço.
+      - "127.0.0.1:80:80"
+      - "100.91.46.87:80:80"
+    volumes:
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./data:/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+      # Painel do Traefik: http://tijolao.tail9e88c5.ts.net/dashboard/ (senha em ~/projetos/.env)
+      - traefik.http.routers.traefik-dashboard.rule=(Host(`tijolao.tail9e88c5.ts.net`) || Host(`100.91.46.87`)) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      - traefik.http.routers.traefik-dashboard.service=api@internal
+      - traefik.http.routers.traefik-dashboard.entrypoints=web
+      - traefik.http.routers.traefik-dashboard.middlewares=traefik-auth
+      - traefik.http.middlewares.traefik-auth.basicauth.usersfile=/data/usersfile
+
+  heimdall:
+    image: lscr.io/linuxserver/heimdall:2.8.3
+    container_name: heimdall
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ./data/heimdall:/config
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+      # http://tijolao.tail9e88c5.ts.net/ — tudo que não é /dashboard vai pro Heimdall
+      - traefik.http.routers.heimdall.rule=Host(`tijolao.tail9e88c5.ts.net`) || Host(`100.91.46.87`)
+      - traefik.http.routers.heimdall.entrypoints=web
+      - traefik.http.services.heimdall.loadbalancer.server.port=80
