@@ -14,10 +14,9 @@ services:
     command:
       - --configFile=/etc/traefik/traefik.yml
     ports:
-      # Só esta máquina (127.0.0.1) + IP da tailnet (100.91.46.87).
-      # A LAN comum (192.168.x) não alcança: nada escuta nesse endereço.
-      - "127.0.0.1:80:80"
-      - "100.91.46.87:80:80"
+      # Rede de casa (wifi) + IP da tailnet + próprio PC.
+      # 192.168.x não é alcançável da internet (roteador bloqueia entrada).
+      - "80:80"
     volumes:
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
       - ./data:/data
