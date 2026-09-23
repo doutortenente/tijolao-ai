@@ -46,7 +46,7 @@ services:
       - proxy
     labels:
       - traefik.enable=true
-      # http://tijolao.tail9e88c5.ts.net/ — tudo que não é /dashboard vai pro Heimdall
-      - traefik.http.routers.heimdall.rule=Host(`tijolao.tail9e88c5.ts.net`) || Host(`100.91.46.87`)
+      # Heimdall responde a QUALQUER nome/endereço na porta 80 (tudo que não é /dashboard)
+      - traefik.http.routers.heimdall.rule=PathPrefix(`/`)
       - traefik.http.routers.heimdall.entrypoints=web
       - traefik.http.services.heimdall.loadbalancer.server.port=80
