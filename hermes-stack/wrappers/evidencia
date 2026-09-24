@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Especialista 'evidencia' do swarm do Tijolao.
+# Mesmo molde de ~/.local/bin/hermes: entra no container do agente, mas com
+# HERMES_HOME apontado para o perfil, para o agente carregar a persona,
+# o modelo e os toolsets daquele especialista.
+set -euo pipefail
+
+PERFIL=evidencia
+STACK=~/hermes-workspace/tijolao.sh
+
+NOME=$(docker ps --format '{{.Names}}' | grep -E '^hermes-agent$|hermes-agent-1$' | head -1)
+
+if [ -z "$NOME" ]; then
+  echo "O Hermes esta desligado." >&2
+  echo "Para ligar:  $STACK up" >&2
+  exit 1
+fi
+
+if [ -t 0 ] && [ -t 1 ]; then
+  exec docker exec -it -e HERMES_HOME="/home/dr/.hermes/profiles/$PERFIL" "$NOME" hermes "$@"
+else
+  exec docker exec -i  -e HERMES_HOME="/home/dr/.hermes/profiles/$PERFIL" "$NOME" hermes "$@"
+fi

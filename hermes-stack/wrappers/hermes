@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Hermes roda em container. Stack: ~/hermes-workspace/tijolao.sh
+set -euo pipefail
+
+STACK=~/hermes-workspace/tijolao.sh
+
+# Aceita o container com qualquer nome (hermes-agent OU *-hermes-agent-1).
+NOME=$(docker ps --format '{{.Names}}' | grep -E '^hermes-agent$|hermes-agent-1$' | head -1)
+
+if [ -z "$NOME" ]; then
+  echo "O Hermes esta desligado." >&2
+  echo "Para ligar:  $STACK up" >&2
+  exit 1
+fi
+
+# Repassa HERMES_HOME quando definida. O Swarm (swarm-tmux-start.ts) monta o
+# comando como `HERMES_HOME='<perfil>' exec hermes chat --tui`; sem repassar,
+# o worker subia no perfil default e o especialista era ignorado.
+ENVARGS=()
+if [ -n "${HERMES_HOME:-}" ]; then
+  ENVARGS+=(-e "HERMES_HOME=$HERMES_HOME")
+fi
+
+if [ -t 0 ] && [ -t 1 ]; then
+  exec docker exec -it "${ENVARGS[@]}" "$NOME" hermes "$@"
+else
+  exec docker exec -i "${ENVARGS[@]}" "$NOME" hermes "$@"
+fi

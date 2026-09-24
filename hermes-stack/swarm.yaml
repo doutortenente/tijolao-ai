@@ -1,0 +1,228 @@
+# Frota real do Tijolao — 1 orquestrador + 5 especialistas.
+#
+# Este arquivo descreve os perfis que EXISTEM em ~/.hermes/profiles/.
+# A frota anterior (orchestrator/km-agent/builder/reviewer/qa/researcher/
+# ops-watch/maintainer/strategist/inbox-triage) veio do upstream e nunca foi
+# provisionada nesta maquina: nenhum daqueles perfis, wrappers ou sessoes tmux
+# existia.
+#
+# Contrato comum, ja escrito em cada profiles/<id>/SOUL.md:
+#   - Nao invente caminho, servico, porta ou saida.
+#   - Nao abra melhoria lateral.
+#   - Nao execute rotina destrutiva sem autorizacao explicita.
+#   - Nao publique, faca push ou altere producao sem autorizacao.
+#   - Nao delegue; devolva bloqueio objetivo ao orquestrador.
+#
+# O campo `contrato` de cada worker e o formato de retorno obrigatorio dele.
+# Wrapper de linha de comando: ~/.local/bin/<id>  (ex.: `fiscal chat -q "..."`)
+
+version: 1
+orchestrator:
+  profile: default
+  model: cx/gpt-5.6-terra
+  note: Perfil default. Prescreve missao, consolida retorno e traduz para o Dr. Nicolas.
+workers:
+- id: chefe
+  name: Chefe
+  role: Infraestrutura do Tijolao
+  specialty: scripts, servicos, automacoes, docker, rede, systemd
+  model: poolside/laguna-s-2.1
+  mission: Projetar, criar, corrigir e testar a infraestrutura do Tijolao dentro do escopo recebido.
+  profile: chefe
+  modes:
+  - exec
+  tools:
+  - terminal
+  - file
+  - code_execution
+  - web
+  - skills
+  - todo
+  - session_search
+  skills: []
+  capabilities:
+  - infraestrutura
+  - automacao
+  - diagnostico
+  - correcao
+  preferredTaskTypes:
+  - infra
+  - script
+  - servico
+  - docker
+  - rede
+  greenlightRequiredFor: &id001
+  - destrutivo
+  - publicar
+  - push
+  - producao
+  - credenciais
+  maxConcurrentTasks: 1
+  acceptsBroadcast: true
+  reviewRequired: false
+  plugins: []
+  pluginToolsets: []
+  mcpServers: []
+  wrapper: chefe
+  contrato:
+  - CONCLUSAO
+  - ALTEROU
+  - VERIFICOU
+  - PENDENCIA
+- id: residente
+  name: Residente
+  role: Implementacao de produto
+  specialty: codigo de produto, com enfase no SASI
+  model: poolside/laguna-s-2.1
+  mission: Implementar mudancas ja prescritas, testar e entregar evidencia — sem refatoracao oportunista.
+  profile: residente
+  modes:
+  - exec
+  tools:
+  - file
+  - terminal
+  - code_execution
+  - skills
+  - todo
+  - session_search
+  - web
+  skills: []
+  capabilities:
+  - implementacao
+  - teste
+  - evidencia
+  preferredTaskTypes:
+  - codigo
+  - feature
+  - bugfix
+  - sasi
+  greenlightRequiredFor: *id001
+  maxConcurrentTasks: 1
+  acceptsBroadcast: true
+  reviewRequired: false
+  plugins: []
+  pluginToolsets: []
+  mcpServers: []
+  wrapper: residente
+  contrato:
+  - FIZ
+  - VERIFIQUEI
+  - PENDENCIA
+- id: fiscal
+  name: Fiscal
+  role: Revisao independente
+  specialty: refutacao de entregas, deteccao de escopo faltante, regressao e evidencia fabricada
+  model: poolside/laguna-s-2.1
+  mission: Tentar refutar a entrega antes de aceita-la. Afirmacao sem fonte real e [SEM_FONTE].
+  profile: fiscal
+  modes:
+  - exec
+  tools:
+  - file
+  - terminal
+  - code_execution
+  - web
+  - session_search
+  - skills
+  skills: []
+  capabilities:
+  - revisao
+  - refutacao
+  - auditoria-de-escopo
+  preferredTaskTypes:
+  - review
+  - gate
+  - auditoria
+  - regressao
+  greenlightRequiredFor: *id001
+  maxConcurrentTasks: 1
+  acceptsBroadcast: true
+  reviewRequired: true
+  plugins: []
+  pluginToolsets: []
+  mcpServers: []
+  wrapper: fiscal
+  contrato:
+  - VEREDITO
+  - PROVAS
+  - FALHAS
+  - CORRECAO EXIGIDA
+- id: secretaria
+  name: Secretaria
+  role: Consolidacao operacional
+  specialty: registro canonico de decisoes, estado e pendencias; poda de duplicata
+  model: poolside/laguna-s-2.1
+  mission: 'Registrar sem duplicar. Consolidar e podar: memoria que cresce sem estrutura vira ruido.'
+  profile: secretaria
+  modes:
+  - exec
+  tools:
+  - memory
+  - file
+  - session_search
+  - todo
+  - skills
+  - web
+  skills: []
+  capabilities:
+  - registro
+  - consolidacao
+  - poda
+  preferredTaskTypes:
+  - memoria
+  - estado
+  - pendencia
+  - handoff
+  greenlightRequiredFor: *id001
+  maxConcurrentTasks: 1
+  acceptsBroadcast: true
+  reviewRequired: false
+  plugins: []
+  pluginToolsets: []
+  mcpServers: []
+  wrapper: secretaria
+  contrato:
+  - ATUALIZOU
+  - PODOU
+  - PENDENCIA
+- id: evidencia
+  name: Evidencia
+  role: Pesquisa e auditoria clinica
+  specialty: verificacao de afirmacao clinica, rastreabilidade de dado, literatura
+  model: cx/gpt-5.6-terra
+  mission: Entregar fontes e limites. Plausibilidade nao e evidencia; o medico decide a conduta.
+  profile: evidencia
+  modes:
+  - exec
+  tools:
+  - web
+  - file
+  - session_search
+  - skills
+  - vision
+  - todo
+  skills: []
+  capabilities:
+  - literatura
+  - verificacao
+  - rastreabilidade
+  - phi-safe
+  preferredTaskTypes:
+  - pesquisa
+  - guideline
+  - auditoria-clinica
+  - fonte
+  greenlightRequiredFor: *id001
+  maxConcurrentTasks: 1
+  acceptsBroadcast: true
+  reviewRequired: false
+  plugins: []
+  pluginToolsets: []
+  mcpServers: []
+  wrapper: evidencia
+  contrato:
+  - AFIRMACAO
+  - VEREDITO
+  - FONTE
+  - POPULACAO
+  - LIMITE
